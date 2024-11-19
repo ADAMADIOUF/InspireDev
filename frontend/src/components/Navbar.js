@@ -167,6 +167,9 @@ const Navbar = () => {
                 <Link to='/user/create-blog' className='dropdown-item'>
                   <FaPen /> Write a Post
                 </Link>
+                <Link to='user/edit/:postId' className='dropdown-item'>
+                  <FaPen /> edit Post
+                </Link>
                 <button onClick={logoutHandler} className='dropdown-item'>
                   <FaSignOutAlt /> Logout
                 </button>

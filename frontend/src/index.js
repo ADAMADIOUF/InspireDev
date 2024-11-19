@@ -19,10 +19,19 @@ import ForgetPassword from './pages/ForgetPassword';
 import ResetPassword from './pages/ResetPassword';
 import HomePage from './pages/HomePage';
 import CreateBlog from './pages/CreateBlog';
+import EditBlogPage from './pages/EditBlogPage';
+import SearchPage from './components/SearchPage';
+import SingleBlog from './pages/SingleBlog';
+import AllPosts from './pages/AllPosts';
+import About from './components/About';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
       <Route index={true} path='/' element={<HomePage />} />
+      <Route path='/about' element={<About />} />
+      <Route path='/search/:keyword' element={<SearchPage />} />
+      <Route path='/blog/:id' element={<SingleBlog />} />
+      <Route path='/all-posts' element={<AllPosts />} />
       <Route path='/register' element={<Register />} />
       <Route path='/login' element={<Login />} />
       <Route path='/forgot-password' element={<ForgetPassword />} />
@@ -30,6 +39,8 @@ const router = createBrowserRouter(
       <Route path='' element={<PrivateRoute />}>
         <Route path='/profile' element={<Profile />} />
         <Route path='/user/create-blog' element={<CreateBlog />} />
+
+        <Route path='user/edit/:postId' element={<EditBlogPage />} />
       </Route>
     </Route>
   )

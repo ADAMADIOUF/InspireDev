@@ -34,27 +34,29 @@ const GetPost = () => {
   if (error) return <div>Error: {error.message}</div>
 
   return (
-    <div className='get-post section-center'>
-      <h1>Posts</h1>
+    <div className='get-post-container'>
+      <h1 className='section-title'>Latest Posts</h1>
       {posts && posts.length > 0 ? (
-        posts.map((post) => (
-          <div key={post._id} className='my-3 p-3 border rounded shadow'>
-            <div>
+        posts.slice(0, 12).map((post) => (
+          <div key={post._id} className='post-card'>
+            <div className='post-header'>
               <h3>{post.title}</h3>
-              <p>{post.content}</p>
+              <p className='post-date'>
+                Posted on: {new Date(post.createdAt).toLocaleDateString()}
+              </p>
+            </div>
+            <div className='post-content'>
+              <p>{post.content.substring(0, 150)}...</p>
               {post.image && (
-                <div>
-                  <img
-                    src={post.image}
-                    alt='Post'
-                    className='img-fluid post-image'
-                  />
+                <div className='post-image'>
+                  <img src={post.image} alt='Post' />
                 </div>
               )}
-              <p>Posted on: {new Date(post.createdAt).toLocaleDateString()}</p>
-              <div className='d-flex justify-content-between'>
-                <FaHeart />
-                <BlogComments blogId={post._id} /> {/* Scoped to post */}
+            </div>
+            <div className='post-footer'>
+              <div className='post-actions'>
+                <FaHeart className='like-icon' />
+                <BlogComments blogId={post._id} />
                 {userInfo && userInfo._id === post.user._id && (
                   <button
                     className='btn btn-danger btn-sm'
@@ -66,7 +68,6 @@ const GetPost = () => {
                 )}
               </div>
             </div>
-
             {/* Add Comment Section */}
             {userInfo && (
               <AddComment blogId={post._id} onCommentAdded={onCommentAdded} />
@@ -74,7 +75,7 @@ const GetPost = () => {
           </div>
         ))
       ) : (
-        <div>No posts found.</div>
+        <div className='no-posts'>No posts found.</div>
       )}
     </div>
   )

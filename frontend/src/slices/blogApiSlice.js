@@ -5,11 +5,12 @@ import { apiSlice } from './apiSlice'
 export const postsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPosts: builder.query({
-      query: () => ({
-        url: BLOGS_URL,
+      query: (searchTerm = '') => ({
+        url: `${BLOGS_URL}?title=${searchTerm}`, // Send search query to filter posts
       }),
       providesTags: ['Blog'],
     }),
+
     getPostById: builder.query({
       query: (id) => `${BLOGS_URL}/${id}`,
     }),
@@ -22,8 +23,8 @@ export const postsApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ['Blog'],
     }),
     updatePost: builder.mutation({
-      query: ({ id, ...data }) => ({
-        url: `${BLOGS_URL}/${id}`,
+      query: (data) => ({
+        url: `${BLOGS_URL}/${data.blogId}`,
         method: 'PUT',
         body: data,
       }),
@@ -43,7 +44,6 @@ export const postsApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-    
   }),
 })
 

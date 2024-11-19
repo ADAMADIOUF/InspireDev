@@ -22,8 +22,13 @@ export const createBlog = asyncHandler(async (req, res) => {
 // Get Blogs
 export const getBlogs = asyncHandler(async (req, res) => {
   try {
-    // Fetch all blogs from the database and populate the user field with the username
-    const blogs = await Blog.find().populate('user', 'username') // Correct the populate statement
+    // Check if a search query for title exists in the request
+    const searchQuery = req.query.title || ''
+
+    // Fetch blogs based on the search query (if any) and populate the user field with the username
+    const blogs = await Blog.find({
+      title: { $regex: searchQuery, $options: 'i' }, // Case-insensitive search for title
+    }).populate('user', 'username')
 
     // If no blogs are found, send a message
     if (blogs.length === 0) {
@@ -87,5 +92,17 @@ export const deleteBlog = asyncHandler(async (req, res) => {
   } catch (error) {
     console.error('Error deleting blog:', error)
     res.status(500).json({ message: 'Error deleting blog' })
+  }
+})
+export const getSingleBlog = asyncHandler(async (req, res) => {
+  const blogId = req.params.id
+
+  const blog = await Blog.findById(blogId).populate('user', 'username')
+
+  if (blog) {
+    res.status(200).json(blog)
+  } else {
+    res.status(404)
+    throw new Error('Blog not found')
   }
 })
