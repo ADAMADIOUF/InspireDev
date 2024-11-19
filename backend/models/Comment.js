@@ -1,24 +1,25 @@
 import mongoose from 'mongoose'
 
-const commentSchema = mongoose.Schema(
+const commentSchema = new mongoose.Schema(
   {
+    content: {
+      type: String,
+      required: true,
+    },
     blog: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Blog',
-      required: true,
+      ref: 'Blog', // Ensures it's referencing the Blog model
+      required: true, // Ensures blogId is mandatory
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
-    content: {
-      type: String,
-      required: true,
-    },
     parentComment: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment',
+      ref: 'Comment', // Reference to another Comment, for replies
+      default: null, // If it's a top-level comment, it will be null
     },
   },
   { timestamps: true }

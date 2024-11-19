@@ -22,13 +22,12 @@ const userSchema = mongoose.Schema(
       enum: ['user', 'admin'],
       default: 'user',
     },
-    avatar: {
+    image: {
       type: String, // URL to avatar image
       default: 'default-avatar.png',
     },
     lastLogin: {
       type: Date,
-
       default: Date.now(),
     },
     isVerified: {
@@ -48,6 +47,7 @@ const userSchema = mongoose.Schema(
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password)
 }
+
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     next()

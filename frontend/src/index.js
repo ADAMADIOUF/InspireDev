@@ -18,6 +18,7 @@ import PrivateRoute from './components/PrivateRoute';
 import ForgetPassword from './pages/ForgetPassword';
 import ResetPassword from './pages/ResetPassword';
 import HomePage from './pages/HomePage';
+import CreateBlog from './pages/CreateBlog';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
@@ -28,6 +29,7 @@ const router = createBrowserRouter(
       <Route path='/reset-password/:token' element={<ResetPassword />} />
       <Route path='' element={<PrivateRoute />}>
         <Route path='/profile' element={<Profile />} />
+        <Route path='/user/create-blog' element={<CreateBlog />} />
       </Route>
     </Route>
   )

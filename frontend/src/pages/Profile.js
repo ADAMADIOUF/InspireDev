@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useProfileMutation } from '../slices/userApiSlice'
-import { useUploadPostImageMutation } from '../slices/blogApiSlice'
+import { useUploadPostImageMutation } from '../slices/userApiSlice'
 import { setCredentials } from '../slices/authSlice'
 import { toast } from 'react-toastify'
 import Loading from '../components/Loading'
@@ -16,7 +16,7 @@ const Profile = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [avatar, setAvatar] = useState('')
+  const [image, setImage] = useState('')
   const [updateProfile, { isLoading: updating }] = useProfileMutation()
   const [uploadProductImage, { isLoading: loadingUpload }] =
     useUploadPostImageMutation()
@@ -27,24 +27,24 @@ const Profile = () => {
     } else {
       setUserName(userInfo.username || '')
       setEmail(userInfo.email || '')
-      setAvatar(userInfo.avatar || '')
+      setImage(userInfo.image || '')
     }
   }, [userInfo, navigate])
 
   const uploadFileHandler = async (e) => {
     const formData = new FormData()
-    formData.append('avatar', e.target.files[0])
+    formData.append('image', e.target.files[0])
     try {
       const res = await uploadProductImage(formData).unwrap()
       toast.success(res.message)
-      setAvatar(res.avatar)
+      setImage(res.image)
     } catch (error) {
       toast.error(error?.data?.message || error.error)
     }
   }
 
   const handleDeleteAvatar = () => {
-    setAvatar('')
+    setImage('')
     toast.info('Avatar removed')
   }
 
@@ -62,7 +62,7 @@ const Profile = () => {
         username,
         email,
         password,
-        avatar,
+        image,
       }).unwrap()
 
       dispatch(setCredentials(updatedUser))
@@ -124,14 +124,14 @@ const Profile = () => {
           <input
             type='text'
             placeholder='Enter image URL'
-            value={avatar}
-            onChange={(e) => setAvatar(e.target.value)}
+            value={image}
+            onChange={(e) => setImage(e.target.value)}
           />
           <input type='file' label='Choose File' onChange={uploadFileHandler} />
-          {avatar && (
+          {image && (
             <div className='avatar-preview'>
               <img
-                src={avatar}
+                src={image}
                 alt='Avatar Preview'
                 style={{
                   width: '100px',

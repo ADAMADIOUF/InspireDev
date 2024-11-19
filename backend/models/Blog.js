@@ -15,7 +15,10 @@ const blogSchema = mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    categories: { type: [String], required: true },
+    categories: {
+      type: [String],
+      required: true,
+    },
     image: {
       type: String, // URL to image for the blog post
     },

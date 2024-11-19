@@ -29,10 +29,10 @@ function checkFileType(file, cb) {
 const upload = multer({
   storage,
 })
-router.post('/', upload.single('avatar'), (req, res) => {
+router.post('/', upload.single('image'), (req, res) => {
   res.send({
     message: 'Image Uploaded',
-    avatar: `/${req.file.path}`,
+    image: `/${req.file.path}`,
   })
 })
 export default router

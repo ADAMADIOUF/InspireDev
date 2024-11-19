@@ -15,7 +15,7 @@ import {
   FaRegLightbulb,
 } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
-
+import logo from "../assets/logoinspre.png"
 import { logout } from '../slices/authSlice'
 import { useLogoutMutation } from '../slices/userApiSlice'
 
@@ -70,7 +70,11 @@ const Navbar = () => {
             </h3>
           </div>
         </RouterLink>
-
+        <div className='navbar-center-message'>
+          <div className='scrolling-text'>
+            Welcome to Inspire Dev - Breaking into tech is the best choice!
+          </div>
+        </div>
         <div className='menu-icon' onClick={toggleMenu}>
           {isMenuOpen ? <FaTimes /> : <FaBars />}
         </div>
@@ -136,18 +140,16 @@ const Navbar = () => {
           )}
         </ul>
 
-        {/* Dropdown menu for logged-in user */}
         {userInfo && (
           <div className='nav-dropdown'>
             <button
-              onClick={() => setDropdownOpen(!dropdownOpen)} // Toggle dropdown state
+              onClick={() => setDropdownOpen(!dropdownOpen)}
               className='nav-user'
             >
-              {/* Display avatar or fallback to username */}
               <div className='avatar'>
-                {userInfo.avatar ? (
+                {userInfo.image ? (
                   <img
-                    src={userInfo.avatar} // Assuming the avatar URL is stored in userInfo.avatar
+                    src={userInfo.image}
                     alt='User Avatar'
                     className='avatar-img'
                   />
@@ -162,7 +164,7 @@ const Navbar = () => {
                 <Link to='/profile' className='dropdown-item'>
                   <FaUser /> Profile
                 </Link>
-                <Link to='/create-post' className='dropdown-item'>
+                <Link to='/user/create-blog' className='dropdown-item'>
                   <FaPen /> Write a Post
                 </Link>
                 <button onClick={logoutHandler} className='dropdown-item'>

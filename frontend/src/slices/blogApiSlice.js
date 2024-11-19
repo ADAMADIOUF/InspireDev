@@ -1,15 +1,12 @@
 // postApiSlice.js
-import { BLOGS_URL, UPLOAD_URL } from '../constants'
+import {  BLOGS_URL, UPLOAD_URL } from '../constants'
 import { apiSlice } from './apiSlice'
-
-
 
 export const postsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPosts: builder.query({
       query: () => ({
         url: BLOGS_URL,
-        
       }),
       providesTags: ['Blog'],
     }),
@@ -46,34 +43,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-    likePost: builder.mutation({
-      query: (postId) => ({
-        url: `${BLOGS_URL}/${postId}/like`,
-        method: 'PUT',
-      }),
-    }),
-    unlikePost: builder.mutation({
-      query: (postId) => ({
-        url: `${BLOGS_URL}/${postId}/unlike`,
-        method: 'PUT',
-      }),
-      invalidatesTags: ['Posts'],
-    }),
-    addComment: builder.mutation({
-      query: ({ postId, text }) => ({
-        url: `${BLOGS_URL}/${postId}/comments`,
-        method: 'POST',
-        body: { text },
-      }),
-      invalidatesTags: ['Posts'],
-    }),
-    deleteComment: builder.mutation({
-      query: ({ postId, commentId }) => ({
-        url: `${BLOGS_URL}/${postId}/comments/${commentId}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['Posts'],
-    }),
+    
   }),
 })
 
@@ -84,8 +54,5 @@ export const {
   useUpdatePostMutation,
   useDeletePostMutation,
   useUploadPostImageMutation,
-  useLikePostMutation,
-  useUnlikePostMutation,
-  useAddCommentMutation,
-  useDeleteCommentMutation,
+  
 } = postsApiSlice

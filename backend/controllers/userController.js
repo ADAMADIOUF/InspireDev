@@ -81,7 +81,7 @@ export const getUserProfile = asyncHandler(async (req, res) => {
       _id: user._id,
       username: user.username,
       email: user.email,
-      avatar: user.avatar,
+      image: user.image,
       role: user.role,
     })
   } else {
@@ -93,13 +93,13 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 
 // Update User Profile
 export const updateUserProfile = asyncHandler(async (req, res) => {
-  const { username, email, avatar, password } = req.body
+  const { username, email, image, password } = req.body
 
   const user = await User.findById(req.user._id)
   if (user) {
     user.username = username || user.username
     user.email = email || user.email
-    user.avatar = avatar || user.avatar
+    user.image = image || user.image
 
     // If a new password is provided, hash and update it
     if (password) {
@@ -113,7 +113,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
       _id: updatedUser._id,
       username: updatedUser.username,
       email: updatedUser.email,
-      avatar: updatedUser.avatar,
+      image: updatedUser.image,
       role: updatedUser.role,
     })
   } else {
@@ -135,7 +135,7 @@ export const getUserByID = asyncHandler(async (req, res) => {
       _id: user._id,
       username: user.username,
       email: user.email,
-      avatar: user.avatar,
+      image: user.image,
       role: user.role,
     })
   } else {
@@ -162,7 +162,7 @@ export const updatedUser = asyncHandler(async (req, res) => {
   if (user) {
     user.username = req.body.username || user.username
     user.email = req.body.email || user.email
-    user.avatar = req.body.avatar || user.avatar
+    user.image = req.body.image || user.image
     user.role = req.body.role || user.role
 
     const updatedUser = await user.save()
@@ -171,7 +171,7 @@ export const updatedUser = asyncHandler(async (req, res) => {
       _id: updatedUser._id,
       username: updatedUser.username,
       email: updatedUser.email,
-      avatar: updatedUser.avatar,
+      image: updatedUser.image,
       role: updatedUser.role,
     })
   } else {

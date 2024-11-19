@@ -269,8 +269,40 @@ text-transform: uppercase;
   background-color:var(--clr-white);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+.navbar-center-message {
+  position: relative;
+  overflow: hidden; /* Ensure the scrolling text doesn't go outside the container */
+ 
+  padding: 10px 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.scrolling-text {
+  display: inline-block;
+  white-space: nowrap; /* Prevent text wrapping */
+  animation: scroll 10s linear infinite; /* Control the animation speed and type */
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Animation for the scrolling text */
+@keyframes scroll {
+  0% {
+    transform: translateX(100%); /* Start outside the viewport */
+  }
+  100% {
+    transform: translateX(-100%); /* End outside the viewport */
+  }
+}
+
 .logo{
   color: var(--primary);
+}
+.logo-icon{
+  color:var(--secondary);
 }
 .nav-header {
   display: flex;
