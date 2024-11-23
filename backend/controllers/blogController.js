@@ -1,7 +1,7 @@
 import asyncHandler from '../middleware/asyncHandler.js'
 
 import Blog from '../models/Blog.js'
-
+import mongoose from 'mongoose'
 // Create Blog
 export const createBlog = asyncHandler(async (req, res) => {
   const { title, content, categories, image, status } = req.body
@@ -43,28 +43,50 @@ export const getBlogs = asyncHandler(async (req, res) => {
   }
 })
 
-// Update Blog
 export const updateBlog = asyncHandler(async (req, res) => {
-  const { title, content, categories, image, status } = req.body
-  const blog = await Blog.findById(req.params.id)
+  const { title, content, image } = req.body
+  const blogId = req.params.id
 
-  if (blog) {
-    if (blog.author.toString() !== req.user._id.toString()) {
-      res.status(401)
-      throw new Error('You are not authorized to update this blog')
+  // Validate if ID is correct format
+  if (!mongoose.Types.ObjectId.isValid(blogId)) {
+    console.log('Invalid Blog ID format:', blogId)
+    return res.status(400).json({ message: 'Invalid Blog ID format' })
+  }
+
+  console.log('Blog ID:', blogId)
+
+  try {
+    // Fetch the blog by ID
+    const blog = await Blog.findById(blogId)
+
+    if (!blog) {
+      console.log('Blog not found for ID:', blogId)
+      return res.status(404).json({ message: 'Blog not found' })
     }
 
+    // Ensure the current user is the author of the blog
+    if (blog.user.toString() !== req.user._id.toString()) {
+      console.log('Unauthorized update attempt by user:', req.user._id)
+      return res
+        .status(401)
+        .json({ message: 'You are not authorized to update this blog' })
+    }
+
+    // Update fields only if new values are provided
     blog.title = title || blog.title
     blog.content = content || blog.content
-    blog.categories = categories || blog.categories
     blog.image = image || blog.image
-    blog.status = status || blog.status
 
+    // Save the updated blog
     const updatedBlog = await blog.save()
-    res.status(200).json(updatedBlog)
-  } else {
-    res.status(404)
-    throw new Error('Blog not found')
+
+    console.log('Blog updated successfully:', updatedBlog)
+    return res.status(200).json(updatedBlog)
+  } catch (error) {
+    console.error('Error updating blog:', error)
+    return res
+      .status(500)
+      .json({ message: 'Error updating blog', error: error.message })
   }
 })
 

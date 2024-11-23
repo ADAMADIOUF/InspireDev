@@ -6,12 +6,13 @@ import { toast } from 'react-toastify'
 import BlogComments from './BlogComment'
 import AddComment from './AddComment'
 import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom' // Import Link from react-router-dom
 
-const GetPost = () => {
+const MyBlog = () => {
   const { data: posts, error, isLoading, refetch } = useGetPostsQuery()
   const [deletePost, { isLoading: loadingDelete }] = useDeletePostMutation()
 
-  const { userInfo } = useSelector((state) => state.auth)
+  const { userInfo } = useSelector((state) => state.auth) // Get user info from the redux store
   const navigate = useNavigate()
 
   // Delete post handler
@@ -37,15 +38,17 @@ const GetPost = () => {
     navigate(`/update/${postId}`)
   }
 
-
   if (isLoading) return <div>Loading...</div>
   if (error) return <div>Error: {error.message}</div>
 
+  // Filter posts to show only the ones created by the logged-in user
+  const userPosts = posts.filter((post) => post.user._id === userInfo._id)
+
   return (
     <div className='get-post-container'>
-      <h1 className='section-title'>Latest Posts</h1>
-      {posts && posts.length > 0 ? (
-        posts.slice(0, 12).map((post) => (
+      <h1 className='section-title'>Your Blog Posts</h1>
+      {userPosts && userPosts.length > 0 ? (
+        userPosts.slice(0, 12).map((post) => (
           <div key={post._id} className='post-card'>
             <div className='post-header'>
               <h3>{post.title}</h3>
@@ -94,10 +97,15 @@ const GetPost = () => {
           </div>
         ))
       ) : (
-        <div className='no-posts'>No posts found.</div>
+        <div className='no-posts'>
+          You have not created any posts yet.{' '}
+          <Link to='/user/create-blog' className='btn btn-primary'>
+            Create a New Post
+          </Link>
+        </div>
       )}
     </div>
   )
 }
 
-export default GetPost
+export default MyBlog

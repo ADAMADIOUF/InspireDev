@@ -4,6 +4,7 @@ import {
   Link as RouterLink,
   useLocation,
   useNavigate,
+  useParams,
 } from 'react-router-dom'
 import { animateScroll as scroll } from 'react-scroll'
 import {
@@ -15,11 +16,12 @@ import {
   FaRegLightbulb,
 } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
-import logo from "../assets/logoinspre.png"
+
 import { logout } from '../slices/authSlice'
 import { useLogoutMutation } from '../slices/userApiSlice'
 
 const Navbar = () => {
+  const { id: blogId } = useParams() // Extract 'id' from the URL
   const location = useLocation()
   const [isMenuOpen, setMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -116,7 +118,18 @@ const Navbar = () => {
               Services
             </RouterLink>
           </li>
-          {/* Only show Login link if the user is not logged in */}
+          <li className='nav-item'>
+            <RouterLink
+              to='/contact'
+              onClick={() => {
+                scrollToTop()
+                handleItemClick()
+              }}
+              className={location.pathname === '/contact' ? 'active-link' : ''}
+            >
+              Contact
+            </RouterLink>
+          </li>
           {!userInfo && (
             <li className='nav-item'>
               <RouterLink
@@ -167,8 +180,8 @@ const Navbar = () => {
                 <Link to='/user/create-blog' className='dropdown-item'>
                   <FaPen /> Write a Post
                 </Link>
-                <Link to='user/edit/:postId' className='dropdown-item'>
-                  <FaPen /> edit Post
+                <Link to='/user/my-blog' className='dropdown-item'>
+                  <FaPen /> my  Post
                 </Link>
                 <button onClick={logoutHandler} className='dropdown-item'>
                   <FaSignOutAlt /> Logout

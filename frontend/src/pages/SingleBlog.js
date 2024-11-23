@@ -2,6 +2,7 @@ import React from 'react'
 import { useGetPostByIdQuery } from '../slices/blogApiSlice'
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import BlogComments from './BlogComment'
 
 const SingleBlog = () => {
   const { id: blogId } = useParams() // Get the blog id from the URL
@@ -32,6 +33,7 @@ const SingleBlog = () => {
           <img src={post.image} alt={post.title} />
         </div>
       )}
+ 
     </div>
   )
 }

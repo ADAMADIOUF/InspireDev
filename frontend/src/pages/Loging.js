@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  useLoginMutation,
-  useGoogleLoginMutation,
-} from '../slices/userApiSlice'
+import { useLoginMutation } from '../slices/userApiSlice'
 import { setCredentials } from '../slices/authSlice'
 import { toast } from 'react-toastify'
 import Loader from '../components/Loading'
+
 const LoginScreen = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -35,49 +33,62 @@ const LoginScreen = () => {
       toast.error(error?.data?.message || error.error)
     }
   }
-  return (
-    <div className='login-screen'>
-      <h1>Sign In</h1>
-      <form onSubmit={submitHandler}>
-        <div className='form-group'>
-          <label htmlFor='email'>Email Address</label>
-          <input
-            type='email'
-            id='email'
-            placeholder='Enter email'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className='form-group'>
-          <label htmlFor='password'>Password</label>
-          <input
-            type='password'
-            id='password'
-            placeholder='Enter password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type='submit' className='submit-button' disabled={isLoading}>
-          Sign In
-        </button>
-        {isLoading && <Loader />}
-      </form>
 
-      <div className='links'>
-        <Link to='/forgot-password'>Forgot your password?</Link>
-        <div className='register-link'>
-          New Customer?{' '}
-          <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>
-            Create account
+  return (
+    <div className='login-container'>
+      <div className='login-card'>
+        <h1 className='login-title'>Sign In</h1>
+        <form onSubmit={submitHandler} className='login-form'>
+          <div className='form-group'>
+            <label htmlFor='email' className='form-label'>
+              Email Address
+            </label>
+            <input
+              type='email'
+              id='email'
+              placeholder='Enter email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className='form-input'
+            />
+          </div>
+          <div className='form-group'>
+            <label htmlFor='password' className='form-label'>
+              Password
+            </label>
+            <input
+              type='password'
+              id='password'
+              placeholder='Enter password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className='form-input'
+            />
+          </div>
+          <button type='submit' className='submit-button' disabled={isLoading}>
+            {isLoading ? <Loader /> : 'Sign In'}
+          </button>
+        </form>
+
+        <div className='login-links'>
+          <Link to='/forgot-password' className='forgot-password-link'>
+            Forgot your password?
           </Link>
+          <div className='register-link'>
+            New Customer?{' '}
+            <Link
+              to={redirect ? `/register?redirect=${redirect}` : '/register'}
+            >
+              Create account
+            </Link>
+          </div>
         </div>
-      </div>
-      <div className='return-to-store'>
-        <Link to='/'>Return to Store</Link>
+
+        <div className='return-to-store'>
+          <Link to='/all-posts'>Return to All Posts</Link>
+        </div>
       </div>
     </div>
   )

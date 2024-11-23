@@ -1,124 +1,102 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
-  useGetPostsQuery,
+  useGetPostByIdQuery,
   useUpdatePostMutation,
-  useUploadPostImageMutation,
-} from '../slices/blogApiSlice'
-import Loading from '../components/Loading'
+} from '../slices/blogApiSlice' // Adjust paths as needed
 import { toast } from 'react-toastify'
 
 const EditBlogPage = () => {
-  const { blogId } = useParams() // Get the post ID from the URL
-  const [updatePost, { isLoading: updating }] = useUpdatePostMutation()
-  const [uploadPostImage, { isLoading: uploadingImage }] =
-    useUploadPostImageMutation()
-
-  const [content, setContent] = useState('')
-  const [title, setTitle] = useState('')
-  const [image, setImage] = useState('')
-
-  const { data: post, error, isLoading } = useGetPostsQuery(blogId) // Fetch post by ID
+  const { postId } = useParams() // Get postId from the URL
   const navigate = useNavigate()
+  const { data: post, isLoading, error } = useGetPostByIdQuery(postId) // Fetch post data using the API hook
+  const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation() // Mutation hook to update the post
 
-  // When the post is fetched, populate the form fields
+  const [formData, setFormData] = useState({
+    title: '',
+    content: '',
+    image: '',
+  })
+
   useEffect(() => {
     if (post) {
-      setTitle(post.title)
-      setContent(post.content)
-      setImage(post.image || '') // Set image if available
+      setFormData({
+        title: post.title,
+        content: post.content,
+        image: post.image || '', // Pre-fill image if available
+      })
     }
   }, [post])
 
+  // If loading, show loading spinner or message
+  if (isLoading) return <div>Loading...</div>
+
+  // If there's an error fetching the post, show an error message
+  if (error) return <div>Error: {error.message}</div>
+
+  // Check if post data is empty or invalid
+  if (!post) return <div>Post not found</div>
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData({
+      ...formData,
+      [name]: value,
+    })
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-
-    if (!title || !content) {
-      toast.error('Title and content are required.')
-      return
-    }
-
     try {
-      // Update the post
-      await updatePost({ id:blogId, title, content, image }).unwrap()
-      toast.success('Post updated successfully!')
-      navigate('/') // Navigate to the homepage or another page after success
-    } catch (error) {
-      toast.error(error?.data?.message || 'Failed to update post.')
+      const updatedPost = await updatePost({ id: postId, ...formData }).unwrap()
+      toast.success('Blog updated successfully!')
+      navigate('/') // Redirect to the homepage after successful update
+    } catch (err) {
+      toast.error('Failed to update the blog post')
     }
-  }
-
-  const uploadFileHandler = async (e) => {
-    const formData = new FormData()
-    formData.append('image', e.target.files[0])
-
-    try {
-      const response = await uploadPostImage(formData).unwrap()
-      toast.success(response.message)
-      setImage(response.image) // Set the image URL from the response
-    } catch (error) {
-      toast.error(error?.data?.message || 'Failed to upload image.')
-    }
-  }
-
-  if (isLoading || uploadingImage) {
-    return <Loading /> // Show loading spinner while fetching or uploading
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div> // Show error if there's an issue fetching the post
   }
 
   return (
-    <div className='edit-blog-page'>
-      <h2>Edit Blog Post</h2>
-      <form onSubmit={handleSubmit} className='edit-blog-form'>
-        <div className='form-group'>
-          <label htmlFor='image-url'>Image URL</label>
+    <div>
+      <h1>Edit Blog Post</h1>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Title</label>
           <input
             type='text'
-            id='image-url'
-            placeholder='Enter image URL'
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
+            name='title'
+            value={formData.title}
+            onChange={handleChange}
+            required
           />
         </div>
-
-        <div className='form-group'>
-          <label htmlFor='image-file'>Upload Image</label>
-          <input
-            type='file'
-            id='image-file'
-            name='image'
-            onChange={uploadFileHandler}
-          />
-        </div>
-
-        <div className='form-group'>
-          <label htmlFor='content'>Content</label>
+        <div>
+          <label>Content</label>
           <textarea
-            id='content'
-            placeholder='Write your post content here...'
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+            name='content'
+            value={formData.content}
+            onChange={handleChange}
+            required
           />
         </div>
-
-        <div className='form-group'>
-          <label htmlFor='title'>Title</label>
+        <div>
+          <label>Image URL</label>
           <input
             type='text'
-            id='title'
-            placeholder='Enter post title'
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            name='image'
+            value={formData.image}
+            onChange={handleChange}
           />
         </div>
-
-        <button type='submit' className='submit-button'>
-          {updating ? <Loading /> : 'Update Post'}
+        <button type='submit' disabled={isUpdating}>
+          {isUpdating ? 'Updating...' : 'Update Post'}
         </button>
       </form>
+
+      {/* Back to Home Button */}
+      <button onClick={() => navigate('/')} className='btn btn-secondary'>
+        Back to Home
+      </button>
     </div>
   )
 }

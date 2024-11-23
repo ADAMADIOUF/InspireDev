@@ -1,8 +1,8 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import './index.css'
+import App from './App'
+import reportWebVitals from './reportWebVitals'
 import { Provider } from 'react-redux'
 import { store } from './store'
 import {
@@ -11,24 +11,30 @@ import {
   Route,
   RouterProvider,
 } from 'react-router-dom'
-import Register from './pages/Register';
-import Login from './pages/Loging';
-import Profile from './pages/Profile';
-import PrivateRoute from './components/PrivateRoute';
-import ForgetPassword from './pages/ForgetPassword';
-import ResetPassword from './pages/ResetPassword';
-import HomePage from './pages/HomePage';
-import CreateBlog from './pages/CreateBlog';
-import EditBlogPage from './pages/EditBlogPage';
-import SearchPage from './components/SearchPage';
-import SingleBlog from './pages/SingleBlog';
-import AllPosts from './pages/AllPosts';
-import About from './components/About';
+import Register from './pages/Register'
+import Login from './pages/Loging'
+import Profile from './pages/Profile'
+import PrivateRoute from './components/PrivateRoute'
+import ForgetPassword from './pages/ForgetPassword'
+import ResetPassword from './pages/ResetPassword'
+import HomePage from './pages/HomePage'
+import CreateBlog from './pages/CreateBlog'
+import EditBlogPage from './pages/EditBlogPage'
+import SearchPage from './components/SearchPage'
+import SingleBlog from './pages/SingleBlog'
+import AllPosts from './pages/AllPosts'
+import About from './components/About'
+import Services from './components/Services'
+import Contact from './components/Contact'
+import MyBlog from './pages/MyBlog'
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
       <Route index={true} path='/' element={<HomePage />} />
       <Route path='/about' element={<About />} />
+      <Route path='/services' element={<Services />} />
+      <Route path='/contact' element={<Contact />} />
       <Route path='/search/:keyword' element={<SearchPage />} />
       <Route path='/blog/:id' element={<SingleBlog />} />
       <Route path='/all-posts' element={<AllPosts />} />
@@ -36,25 +42,24 @@ const router = createBrowserRouter(
       <Route path='/login' element={<Login />} />
       <Route path='/forgot-password' element={<ForgetPassword />} />
       <Route path='/reset-password/:token' element={<ResetPassword />} />
-      <Route path='' element={<PrivateRoute />}>
+
+      <Route element={<PrivateRoute />}>
         <Route path='/profile' element={<Profile />} />
         <Route path='/user/create-blog' element={<CreateBlog />} />
+        <Route path='/update/:postId' element={<EditBlogPage />} />
+        <Route path='/user/my-blog' element={<MyBlog />} />
 
-        <Route path='user/edit/:postId' element={<EditBlogPage />} />
+        {/* Ensure the ID is passed here */}
       </Route>
     </Route>
   )
 )
-const root = ReactDOM.createRoot(document.getElementById('root'));
+
+const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <Provider store={store}>
-      {' '}
-      <RouterProvider router={router} />
-   
+    <RouterProvider router={router} />
   </Provider>
 )
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+reportWebVitals()

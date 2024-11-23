@@ -108,7 +108,7 @@ const RegisterScreen = () => {
       </div>
 
       <div className='return-to-store'>
-        <Link to='/'>Return to Store</Link>
+        <Link to='/all-posts'>Return to All Posts</Link>
       </div>
     </div>
   )

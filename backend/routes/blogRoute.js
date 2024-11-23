@@ -1,17 +1,24 @@
+import { protect, admin } from '../middleware/authMiddleware.js'
 import express from 'express'
 import {
   createBlog,
   getBlogs,
+  getSingleBlog,
   updateBlog,
   deleteBlog,
-  getSingleBlog,
 } from '../controllers/blogController.js'
-import { protect } from '../middleware/authMiddleware.js'
 
 const router = express.Router()
 
-router.route('/').post(protect, createBlog).get(getBlogs)
-router.route('/:id').get(getSingleBlog).put(updateBlog).delete(deleteBlog)
+router
+  .route('/')
+  .post(protect, createBlog) // Protect create route
+  .get(getBlogs)
 
+router
+  .route('/:id')
+  .get(getSingleBlog)
+  .put(protect, updateBlog) // Protect update route
+  .delete(protect, deleteBlog) // Protect delete route
 
 export default router

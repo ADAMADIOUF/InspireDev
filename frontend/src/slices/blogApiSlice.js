@@ -1,9 +1,9 @@
-// postApiSlice.js
-import {  BLOGS_URL, UPLOAD_URL } from '../constants'
+import { BLOGS_URL, UPLOAD_URL } from '../constants'
 import { apiSlice } from './apiSlice'
 
 export const postsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    // Fetch all posts
     getPosts: builder.query({
       query: (searchTerm = '') => ({
         url: `${BLOGS_URL}?title=${searchTerm}`, // Send search query to filter posts
@@ -11,9 +11,12 @@ export const postsApiSlice = apiSlice.injectEndpoints({
       providesTags: ['Blog'],
     }),
 
+    // Fetch a single post by its ID
     getPostById: builder.query({
-      query: (id) => `${BLOGS_URL}/${id}`,
+      query: (blogId) => `${BLOGS_URL}/${blogId}`,
     }),
+
+    // Add a new post
     addPost: builder.mutation({
       query: (data) => ({
         url: BLOGS_URL,
@@ -22,21 +25,27 @@ export const postsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Blog'],
     }),
+
+    // Update an existing post
     updatePost: builder.mutation({
       query: (data) => ({
-        url: `${BLOGS_URL}/${data.blogId}`,
+        url: `${BLOGS_URL}/${data.id}`, // Ensure `blogId` is passed correctly here
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: ['Posts'],
+      invalidatesTags: ['Blog'],
     }),
+
+    // Delete a post
     deletePost: builder.mutation({
       query: (id) => ({
         url: `${BLOGS_URL}/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Posts'],
+      invalidatesTags: ['Blog'],
     }),
+
+    // Upload an image for a post
     uploadPostImage: builder.mutation({
       query: (data) => ({
         url: `${UPLOAD_URL}`,
@@ -54,5 +63,4 @@ export const {
   useUpdatePostMutation,
   useDeletePostMutation,
   useUploadPostImageMutation,
-  
 } = postsApiSlice
