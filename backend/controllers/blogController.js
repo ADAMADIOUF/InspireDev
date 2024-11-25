@@ -101,8 +101,11 @@ export const deleteBlog = asyncHandler(async (req, res) => {
     throw new Error('Blog not found')
   }
 
-  // Check if the logged-in user is the one who created the blog
-  if (blog.user.toString() !== req.user._id.toString()) {
+  // Check if the logged-in user is an admin or the one who created the blog
+  if (
+    blog.user.toString() !== req.user._id.toString() &&
+    req.user.role !== 'admin'
+  ) {
     res.status(401)
     throw new Error('User not authorized to delete this blog')
   }
@@ -116,6 +119,7 @@ export const deleteBlog = asyncHandler(async (req, res) => {
     res.status(500).json({ message: 'Error deleting blog' })
   }
 })
+
 export const getSingleBlog = asyncHandler(async (req, res) => {
   const blogId = req.params.id
 

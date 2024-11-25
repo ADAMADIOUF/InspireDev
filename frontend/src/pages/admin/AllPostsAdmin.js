@@ -1,10 +1,13 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { useGetPostsQuery, useDeletePostMutation } from '../slices/blogApiSlice'
+import {
+  useGetPostsQuery,
+  useDeletePostMutation,
+} from '../../slices/blogApiSlice'
 import { FaTrash, FaHeart, FaEdit } from 'react-icons/fa'
 import { toast } from 'react-toastify'
-import BlogComments from './BlogComment'
-import AddComment from './AddComment'
+import BlogComments from '../BlogComment'
+import AddComment from '../AddComment'
 import { useNavigate } from 'react-router-dom'
 
 const GetPost = () => {
@@ -37,7 +40,6 @@ const GetPost = () => {
     navigate(`/update/${postId}`)
   }
 
-
   if (isLoading) return <div>Loading...</div>
   if (error) return <div>Error: {error.message}</div>
 
@@ -69,7 +71,8 @@ const GetPost = () => {
                 <div className='post-actions'>
                   <FaHeart className='like-icon' />
                   <BlogComments blogId={post._id} />
-                  {userInfo && userInfo._id === post.user._id && (
+                  {(userInfo && userInfo._id === post.user._id) ||
+                  userInfo.role === 'admin' ? (
                     <>
                       {/* Edit Button */}
                       <button
@@ -82,13 +85,13 @@ const GetPost = () => {
                       {/* Delete Button */}
                       <button
                         className='btn btn-danger btn-sm'
-                        onClick={() => deleteHandler(post._id)}
+                        onClick={() => deleteHandler(post._id, post.user._id)}
                         disabled={loadingDelete}
                       >
                         <FaTrash />
                       </button>
                     </>
-                  )}
+                  ) : null}
                 </div>
               </div>
               {/* Add Comment Section */}

@@ -1,35 +1,32 @@
 import React from 'react'
-import { useParams, useNavigate } from 'react-router-dom' // For URL params and navigation
-import { useGetPostsQuery } from '../slices/blogApiSlice' // Your slice
+import { useParams, Link } from 'react-router-dom' 
+import { useGetPostsQuery } from '../slices/blogApiSlice' 
 
 const SearchPage = () => {
-  const { keyword } = useParams() // Get the search keyword from the URL
-  const { data: posts, error, isLoading } = useGetPostsQuery(keyword) // Fetch posts based on the keyword
-  const navigate = useNavigate() // Hook for navigation
+  const { keyword } = useParams() 
+  const { data: posts, error, isLoading } = useGetPostsQuery(keyword)
 
-  const handleBackHome = () => {
-    navigate('/') // Navigate back to home page
+  if (error && !isLoading && !posts) {
+    return (
+      <div>
+        <p>blog or post not found.</p>
+        <Link to='/'> Back to Home</Link>
+      </div>
+    )
   }
 
   return (
     <div>
       <h2>Search Results for "{keyword}"</h2>
+
+    
       {isLoading && <p>Loading...</p>}
-      {error && <p>Error fetching blogs</p>}
 
-      {/* Display message if no posts are found */}
-      {posts && posts.length === 0 && !isLoading && (
-        <div>
-          <p>Blog not found for "{keyword}".</p>
-          <button onClick={handleBackHome} className='btn btn-primary'>
-            Back to Home
-          </button>
-        </div>
-      )}
+      
 
-      {/* Display posts if found */}
-      {posts && posts.length > 0 && (
-        <div className='search-results'>
+    
+      {!isLoading && posts && posts.length > 0 && (
+        <div className='search-results section-center'>
           <ul>
             {posts.map((post) => (
               <li key={post._id} className='search-result-item'>
@@ -38,7 +35,7 @@ const SearchPage = () => {
                 </div>
                 <h3>{post.title}</h3>
                 <p>{post.content.substring(0, 150)}...</p>{' '}
-                {/* Show the first 150 characters of content */}
+                
                 <p>
                   <strong>Published on:</strong>{' '}
                   {new Date(post.createdAt).toLocaleDateString()}

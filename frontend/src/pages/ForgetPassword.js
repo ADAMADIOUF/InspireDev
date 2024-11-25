@@ -27,9 +27,9 @@ const ForgetPassword = () => {
   }
 
   return (
-    <div className='form-container'>
+    <div className='form-container section-center'>
       <h1>Forgot Password</h1>
-      <form onSubmit={submitHandler} className='forgot-password-form'>
+      <form onSubmit={submitHandler} className='form'>
         <div className='form-group'>
           <label htmlFor='email'>Email Address</label>
           <input

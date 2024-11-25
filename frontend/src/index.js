@@ -27,6 +27,11 @@ import About from './components/About'
 import Services from './components/Services'
 import Contact from './components/Contact'
 import MyBlog from './pages/MyBlog'
+import AdminRoute from './components/AdminRoute'
+import Dashboard from './pages/admin/Dashboard'
+import AllPostsAdmin from './pages/admin/AllPostsAdmin'
+import AllUsers from './pages/admin/AllUsers'
+import EditUser from './pages/admin/EditUser'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -48,8 +53,12 @@ const router = createBrowserRouter(
         <Route path='/user/create-blog' element={<CreateBlog />} />
         <Route path='/update/:postId' element={<EditBlogPage />} />
         <Route path='/user/my-blog' element={<MyBlog />} />
-
-        {/* Ensure the ID is passed here */}
+      </Route>
+      <Route path='' element={<AdminRoute />}>
+        <Route path='/admin/dashboard' element={<Dashboard />} />
+        <Route path='/admin/all-posts' element={<AllPostsAdmin />} />
+        <Route path='/admin/all-users' element={<AllUsers />} />
+        <Route path='/admin/user/:id/edit' element={<EditUser />} />
       </Route>
     </Route>
   )

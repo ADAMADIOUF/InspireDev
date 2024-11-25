@@ -16,21 +16,26 @@ const generateNumericCode = (length) => {
 }
 // Register User
 export const registerUser = asyncHandler(async (req, res) => {
-  const { email, username, password } = req.body
+  const { email, username, password, role } = req.body // Capture the role from request body
   const userExist = await User.findOne({ email })
   if (userExist) {
     res.status(400)
-    throw new Error('User already exits')
+    throw new Error('User already exists')
   }
+
+  // Set default role to 'user', and only allow 'admin' if the admin role is explicitly passed.
+  const userRole = role === 'admin' ? 'admin' : 'user'
 
   const verificationCode = generateNumericCode(6)
   const user = await User.create({
     username,
     email,
     password,
+    role: userRole, // Use the determined role
     verificationToken: verificationCode,
     verificationExpiresAt: Date.now() + 3600000,
   })
+
   if (user) {
     generateToken(res, user._id)
     res.status(200).json({
@@ -41,9 +46,10 @@ export const registerUser = asyncHandler(async (req, res) => {
     })
   } else {
     res.status(400)
-    throw new Error('User not found')
+    throw new Error('User creation failed')
   }
 })
+
 // Login User
 export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body
@@ -144,41 +150,67 @@ export const getUserByID = asyncHandler(async (req, res) => {
   }
 })
 
-// Delete User
 export const deleteUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id)
-  if (user) {
-    await user.remove()
-    res.json({ message: 'User removed successfully' })
-  } else {
+  const { id } = req.params
+  console.log(`Attempting to delete user with ID: ${id}`)
+
+  const user = await User.findById(id)
+  if (!user) {
+    console.log(`User with ID: ${id} not found in the database`)
     res.status(404)
     throw new Error('User not found')
   }
+
+  console.log('User found:', user)
+
+  // Explicitly use deleteOne
+  const result = await User.deleteOne({ _id: id })
+  console.log('Deletion result:', result)
+
+  if (result.deletedCount === 0) {
+    res.status(500)
+    throw new Error('User not deleted')
+  }
+
+  res.json({ message: 'User removed successfully' })
 })
 
 // Update User
 export const updatedUser = asyncHandler(async (req, res) => {
+  // Check if the user making the request is an admin
+  if (req.user && req.user.role !== 'admin') {
+    res.status(401)
+    throw new Error('Not authorized, admin role required')
+  }
+
+  // Find the user by ID from the request parameters
   const user = await User.findById(req.params.id)
+
   if (user) {
+    // Update the user's details if they exist
     user.username = req.body.username || user.username
     user.email = req.body.email || user.email
     user.image = req.body.image || user.image
-    user.role = req.body.role || user.role
+    user.role = req.body.role || user.role // Update the role field
 
+    // Save the updated user
     const updatedUser = await user.save()
 
+    // Respond with the updated user details
     res.json({
       _id: updatedUser._id,
       username: updatedUser.username,
       email: updatedUser.email,
       image: updatedUser.image,
-      role: updatedUser.role,
+      role: updatedUser.role, // Return the updated role
     })
   } else {
+    // If the user is not found, return a 404 error
     res.status(404)
     throw new Error('User not found')
   }
 })
+
 export const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body
 

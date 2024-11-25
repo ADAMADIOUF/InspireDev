@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { useResetPasswordMutation } from '../slices/userApiSlice' // Adjust the import based on your API slice
+import { useResetPasswordMutation } from '../slices/userApiSlice'
 import Loader from '../components/Loading'
 
 const ResetPassword = () => {
@@ -28,9 +28,9 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className='reset-password-container'>
+    <div className='form-container section-center'>
       <h2>Reset Password</h2>
-      <form onSubmit={submitHandler}>
+      <form onSubmit={submitHandler} className='form'>
         <div className='form-group'>
           <label htmlFor='password'>New Password</label>
           <input
@@ -53,7 +53,7 @@ const ResetPassword = () => {
             required
           />
         </div>
-        <button type='submit' className='update-button'>
+        <button type='submit' className='btn'>
           Reset Password
         </button>
         {isLoading && <Loader />}

@@ -14,6 +14,10 @@ import {
   FaSignOutAlt,
   FaPen,
   FaRegLightbulb,
+  FaFileAlt, // Import the new icon
+  FaTachometerAlt, // Dashboard icon
+  FaUsers, // All users icon
+  FaClipboardList, // All posts icon
 } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -21,7 +25,6 @@ import { logout } from '../slices/authSlice'
 import { useLogoutMutation } from '../slices/userApiSlice'
 
 const Navbar = () => {
-  const { id: blogId } = useParams() // Extract 'id' from the URL
   const location = useLocation()
   const [isMenuOpen, setMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -181,8 +184,22 @@ const Navbar = () => {
                   <FaPen /> Write a Post
                 </Link>
                 <Link to='/user/my-blog' className='dropdown-item'>
-                  <FaPen /> my  Post
+                  <FaFileAlt /> My Post {/* Updated icon */}
                 </Link>
+                {/* Admin Links */}
+                {userInfo.role === 'admin' && (
+                  <>
+                    <Link to='/admin/dashboard' className='dropdown-item'>
+                      <FaTachometerAlt /> Dashboard
+                    </Link>
+                    <Link to='/admin/all-posts' className='dropdown-item'>
+                      <FaClipboardList /> All Posts
+                    </Link>
+                    <Link to='/admin/all-users' className='dropdown-item'>
+                      <FaUsers /> All Users
+                    </Link>
+                  </>
+                )}
                 <button onClick={logoutHandler} className='dropdown-item'>
                   <FaSignOutAlt /> Logout
                 </button>

@@ -64,7 +64,7 @@ const Contact = () => {
           <h2>Get in Touch</h2>
           <div className='info-item'>
             <FaPhoneAlt className='info-icon' />
-            <p>+1 (123) 456-7890</p>
+            <p>+1 (701) 500-3259</p>
           </div>
           <div className='info-item'>
             <FaEnvelope className='info-icon' />

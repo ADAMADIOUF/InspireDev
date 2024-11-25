@@ -33,4 +33,5 @@ router.delete('/:id', protect, admin, deleteUser) // Admins can delete any user
 router.put('/:id', protect, admin, updatedUser) // Admins can update any user
 router.post('/forgot-password', forgotPassword) 
 router.put('/reset-password/:token', resetPassword)
+
 export default router

@@ -34,8 +34,10 @@ const protect = asyncHandler(async (req, res, next) => {
 // Admin middleware to restrict access to admin users only
 const admin = (req, res, next) => {
   if (req.user && req.user.role === 'admin') {
+     console.log(`User with ID: ${req.user._id} is admin`)
     next()
   } else {
+      console.log(`User with ID: ${req.user._id} is not admin`)
     res.status(401)
     throw new Error('Not authorized as Admin')
   }
