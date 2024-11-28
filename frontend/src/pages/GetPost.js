@@ -68,7 +68,8 @@ const GetPost = () => {
               <div className='post-footer'>
                 <div className='post-actions'>
                   <FaHeart className='like-icon' />
-                  <BlogComments blogId={post._id} />
+                  <BlogComments blogId={post._id} blogOwnerId={post.user._id} />
+
                   {userInfo && userInfo._id === post.user._id && (
                     <>
                       {/* Edit Button */}

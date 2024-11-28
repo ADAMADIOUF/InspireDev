@@ -30,9 +30,10 @@ export const commentApiSlice = apiSlice.injectEndpoints({
       ],
     }),
     deleteComment: builder.mutation({
-      query: ({ commentId, blogId }) => ({
-        url: `${BLOGS_COMMENT}/${commentId}/${blogId}`, // DELETE /api/comments/:commentId/:blogId
+      query: ({ commentId, blogId, postOwnerId }) => ({
+        url: `${BLOGS_COMMENT}/${commentId}/${blogId}`,
         method: 'DELETE',
+        body: { postOwnerId }, // Send postOwnerId if needed
       }),
       invalidatesTags: (result, error, { blogId }) => [
         { type: 'Comment', id: blogId },

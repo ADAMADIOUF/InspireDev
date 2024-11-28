@@ -75,39 +75,52 @@ export const updateComment = asyncHandler(async (req, res) => {
 })
 // Controller code
 // Controller code for deleting a comment
+// Middleware function to handle deleting comments
 export const deleteComment = asyncHandler(async (req, res) => {
-  const { commentId, blogId } = req.params;  // Extract both commentId and blogId
+  const { commentId, blogId } = req.params // Extract both commentId and blogId
 
-  if (!mongoose.isValidObjectId(commentId) || !mongoose.isValidObjectId(blogId)) {
-    return res.status(400).json({ message: 'Invalid commentId or blogId' });
+  // Validate ObjectIds
+  if (
+    !mongoose.isValidObjectId(commentId) ||
+    !mongoose.isValidObjectId(blogId)
+  ) {
+    return res.status(400).json({ message: 'Invalid commentId or blogId' })
   }
 
-  // Check if the blog exists
-  const blog = await Blog.findById(blogId);
+  // Find the blog post by ID and populate its user
+  const blog = await Blog.findById(blogId).populate('user')
   if (!blog) {
-    return res.status(404).json({ message: 'Blog not found' });
+    return res.status(404).json({ message: 'Blog not found' })
   }
 
-  // Ensure blog.comments is always an array (even if it's undefined)
-  blog.comments = blog.comments || []; // Set it to an empty array if it's undefined
+  // Check if the comments field is an array
+  if (!Array.isArray(blog.comments)) {
+    blog.comments = [] // Fallback to an empty array
+  }
 
-  // Check if the comment exists in the Comment collection
-  const comment = await Comment.findById(commentId);
+  // Find the comment by ID
+  const comment = await Comment.findById(commentId)
   if (!comment) {
-    return res.status(404).json({ message: 'Comment not found' });
+    return res.status(404).json({ message: 'Comment not found' })
   }
 
-  // Check if the logged-in user is the author of the comment
-  if (comment.user.toString() !== req.user._id.toString()) {
-    return res.status(401).json({ message: 'User not authorized to delete this comment' });
+  // Check if the user making the request is the owner of the blog (post owner) or the comment (comment author)
+  const isAuthorizedToDelete =
+    blog.user._id.toString() === req.user._id.toString() || // Blog owner
+    comment.user._id.toString() === req.user._id.toString() // Comment owner
+
+  if (!isAuthorizedToDelete) {
+    return res
+      .status(401)
+      .json({ message: 'User not authorized to delete this comment' })
   }
 
-  // Delete the comment from the Comment collection
-  await Comment.deleteOne({ _id: commentId });
+  // Proceed to delete the comment
+  await Comment.deleteOne({ _id: commentId })
 
   // Remove the comment from the blog's comments array
-  blog.comments = blog.comments.filter((c) => c.toString() !== commentId);
-  await blog.save();
+  blog.comments = blog.comments.filter((c) => c.toString() !== commentId)
+  await blog.save()
 
-  res.status(200).json({ message: 'Comment deleted' });
-});
+  res.status(200).json({ message: 'Comment deleted successfully' })
+})

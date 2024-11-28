@@ -234,7 +234,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   await user.save()
 
   // Create reset password link
-  const resetUrl = `http://localhost:3000/forgot-password/${resetToken}`
+  const resetUrl = `https://inspiredev.onrender.com/forgot-password/${resetToken}`
 
   try {
     // Send password reset email
