@@ -1,3 +1,10 @@
+{
+  "username": "adminUser",
+  "email": "admin@example.com",
+  "password": "adminPassword123",
+  "role": "admin"
+}
+
 Username: TechGuru123
 
 Email: techguru123@example.com
@@ -68,3 +75,4 @@ A portfolio is your ticket to landing a job in tech. This blog guides readers on
 Content:
 The world of front-end development is evolving rapidly. This blog explores upcoming trends for 2024, such as Web3, server-side rendering, AI-powered tools, and the increasing importance of frameworks like Next.js and Tailwind CSS.
 
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"

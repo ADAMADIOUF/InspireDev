@@ -6,16 +6,25 @@ import mongoose from 'mongoose'
 export const createBlog = asyncHandler(async (req, res) => {
   const { title, content, categories, image, status } = req.body
 
+  // Ensure user is logged in
+  if (!req.user) {
+    res.status(401)
+    throw new Error('User not authorized')
+  }
+
+  // Create new blog post
   const post = new Blog({
     title,
     content,
-    user: req.user._id, // Assuming req.user is populated from the middleware
+    user: req.user._id, // This gets the user ID from the session or token
     categories,
     image,
     status,
   })
 
+  // Save the post to the database
   const createdPost = await post.save()
+
   res.status(201).json(createdPost)
 })
   

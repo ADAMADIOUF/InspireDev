@@ -68,7 +68,7 @@ const BlogComments = ({ blogId, postOwnerId }) => {
 
   return (
     <div>
-      <h3>Comments</h3>
+      <h4>Comments</h4>
       {data?.comments?.length > 0 ? (
         data.comments.map((comment) => (
           <div key={comment._id} className='comment-container'>

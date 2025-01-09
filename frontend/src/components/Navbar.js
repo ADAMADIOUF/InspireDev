@@ -99,6 +99,20 @@ const Navbar = () => {
           </li>
           <li className='nav-item'>
             <RouterLink
+              to='/all-posts'
+              onClick={() => {
+                scrollToTop()
+                handleItemClick()
+              }}
+              className={
+                location.pathname === '/all-posts' ? 'active-link' : ''
+              }
+            >
+              All Blogs
+            </RouterLink>
+          </li>
+          <li className='nav-item'>
+            <RouterLink
               to='/about'
               onClick={() => {
                 scrollToTop()
@@ -175,7 +189,7 @@ const Navbar = () => {
               </div>
               <span className='username'>{userInfo.username}</span>
             </button>
-            {dropdownOpen && ( // Only show dropdown if `dropdownOpen` is true
+            {dropdownOpen && (
               <div className='dropdown-user'>
                 <Link to='/profile' className='dropdown-item'>
                   <FaUser /> Profile

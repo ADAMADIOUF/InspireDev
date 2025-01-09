@@ -7,6 +7,7 @@ import {
   FaTwitter,
   FaLinkedin,
   FaInstagram,
+  FaDownload,
 } from 'react-icons/fa'
 import { useSendContactFormMutation } from '../slices/contactSlice'
 
@@ -164,6 +165,38 @@ const Contact = () => {
             </div>
           )}
         </div>
+      </div>
+      <div className='additional-info'>
+        <h2>Find Us Here</h2>
+        <iframe
+          src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509868!2d144.9537353153168!3d-37.81627944202179!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0xf5777d7906a0b2e8!2sTech%20City!5e0!3m2!1sen!2sus!4v1626273923489!5m2!1sen!2sus'
+          width='100%'
+          height='400'
+          style={{ border: 0 }}
+          allowFullScreen=''
+          loading='lazy'
+        ></iframe>
+      </div>
+
+      <div className='faq'>
+        <h2>Frequently Asked Questions</h2>
+        <ul>
+          <li>
+            <strong>Q: What is your response time?</strong>
+            <p>A: We typically respond within 24 hours.</p>
+          </li>
+          <li>
+            <strong>Q: Can I visit your office?</strong>
+            <p>A: Yes, but please schedule an appointment in advance.</p>
+          </li>
+        </ul>
+      </div>
+
+      <div className='resources'>
+        <h2>Resources</h2>
+        <a href='/brochure.pdf' download className='resource-link'>
+          <FaDownload /> Download Our Brochure
+        </a>
       </div>
     </section>
   )

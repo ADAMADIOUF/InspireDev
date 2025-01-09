@@ -5,7 +5,7 @@ import { useLoginMutation } from '../slices/userApiSlice'
 import { setCredentials } from '../slices/authSlice'
 import { toast } from 'react-toastify'
 import Loader from '../components/Loading'
-
+import GoogleLogin from "./GoogleLogin"
 const LoginScreen = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -71,7 +71,9 @@ const LoginScreen = () => {
             {isLoading ? <Loader /> : 'Sign In'}
           </button>
         </form>
-
+<div className='google-login'>
+          <GoogleLogin/>
+        </div>
         <div className='login-links'>
           <Link to='/forgot-password' className='forgot-password-link'>
             Forgot your password?

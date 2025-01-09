@@ -32,7 +32,7 @@ import Dashboard from './pages/admin/Dashboard'
 import AllPostsAdmin from './pages/admin/AllPostsAdmin'
 import AllUsers from './pages/admin/AllUsers'
 import EditUser from './pages/admin/EditUser'
-
+import { GoogleOAuthProvider } from '@react-oauth/google'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
@@ -67,7 +67,9 @@ const router = createBrowserRouter(
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <Provider store={store}>
-    <RouterProvider router={router} />
+    
+      <RouterProvider router={router} />
+    
   </Provider>
 )
 

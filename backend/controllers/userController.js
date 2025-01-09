@@ -16,60 +16,72 @@ const generateNumericCode = (length) => {
 }
 // Register User
 export const registerUser = asyncHandler(async (req, res) => {
-  const { email, username, password, role } = req.body // Capture the role from request body
-  const userExist = await User.findOne({ email })
-  if (userExist) {
-    res.status(400)
-    throw new Error('User already exists')
+  const { email, username, password, role } = req.body;
+
+  if (!email || !username || !password) {
+    res.status(400);
+    throw new Error('All fields (email, username, password) are required');
   }
 
-  // Set default role to 'user', and only allow 'admin' if the admin role is explicitly passed.
-  const userRole = role === 'admin' ? 'admin' : 'user'
+  // Check if the user already exists
+  const userExist = await User.findOne({ email });
+  if (userExist) {
+    res.status(400);
+    throw new Error('User already exists');
+  }
 
-  const verificationCode = generateNumericCode(6)
+  // Set role to 'user' or 'admin'
+  const userRole = role === 'admin' ? 'admin' : 'user';
+
+  // Generate verification code
+  const verificationCode = generateNumericCode(6);
+
+  // Hash password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
   const user = await User.create({
     username,
     email,
-    password,
-    role: userRole, // Use the determined role
+    password: hashedPassword,
+    role: userRole,
     verificationToken: verificationCode,
-    verificationExpiresAt: Date.now() + 3600000,
-  })
+    verificationExpiresAt: Date.now() + 3600000, // 1 hour expiration
+  });
 
   if (user) {
-    generateToken(res, user._id)
+    generateToken(res, user._id); // Generate token on successful registration
     res.status(200).json({
       _id: user._id,
       username: user.username,
       email: user.email,
       role: user.role,
-    })
+    });
   } else {
-    res.status(400)
-    throw new Error('User creation failed')
+    res.status(400);
+    throw new Error('User creation failed');
   }
-})
+});
 
-// Login User
 export const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body
+  const { email, password } = req.body;
 
-  const user = await User.findOne({ email })
+  const user = await User.findOne({ email });
+
   if (user && (await user.matchPassword(password))) {
-    generateToken(res, user._id)
+    generateToken(res, user._id); // Generate token after successful login
     res.json({
       _id: user._id,
       username: user.username,
       email: user.email,
       role: user.role,
-      avatar: user.avatar,
-    })
+      image: user.image,
+    });
   } else {
-    res.status(401)
-    throw new Error('Invalid email or password')
+    res.status(401);
+    throw new Error('Invalid email or password');
   }
-})
-
+});
 // Logout User
 export const logoutUser = asyncHandler(async (req, res) => {
   res.cookie('jwt', '', {
@@ -81,7 +93,11 @@ export const logoutUser = asyncHandler(async (req, res) => {
 
 // Get User Profile
 export const getUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id)
+  // If the user is logged in with Google, their Google ID will likely be stored in req.user
+  const user =
+    (await User.findOne({ googleId: req.user.googleId })) ||
+    (await User.findById(req.user._id))
+
   if (user) {
     res.json({
       _id: user._id,
@@ -97,23 +113,31 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 })
 
 
+
+// Update User Profile
 // Update User Profile
 export const updateUserProfile = asyncHandler(async (req, res) => {
-  const { username, email, image, password } = req.body
+  const { username, email, image, password } = req.body;
 
-  const user = await User.findById(req.user._id)
+  const user = await User.findById(req.user._id);
   if (user) {
-    user.username = username || user.username
-    user.email = email || user.email
-    user.image = image || user.image
+    // Check if the user logged in with Google
+    if (user.googleId) {
+      return res.status(400).json({ message: 'Google login users cannot update email or username.' });
+    }
+
+    // Update the fields if provided
+    user.username = username || user.username;
+    user.email = email || user.email;
+    user.image = image || user.image;
 
     // If a new password is provided, hash and update it
     if (password) {
-      const salt = await bcrypt.genSalt(10)
-      user.password = await bcrypt.hash(password, salt)
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
     }
 
-    const updatedUser = await user.save()
+    const updatedUser = await user.save();
 
     res.json({
       _id: updatedUser._id,
@@ -121,12 +145,13 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
       email: updatedUser.email,
       image: updatedUser.image,
       role: updatedUser.role,
-    })
+    });
   } else {
-    res.status(404)
-    throw new Error('User not found')
+    res.status(404);
+    throw new Error('User not found');
   }
-})
+});
+
 // Get All Users
 export const getUsers = asyncHandler(async (req, res) => {
   const users = await User.find({})

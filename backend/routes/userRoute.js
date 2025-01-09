@@ -18,7 +18,7 @@ const router = express.Router()
 
 // Public routes
 router.post('/register', registerUser) // Anyone can register
-router.post('/login', loginUser) // Anyone can log in
+router.post('/login', loginUser) 
 router.post('/password-reset', resetPassword) // Anyone can request password reset
 
 // Protected routes (Requires authentication)

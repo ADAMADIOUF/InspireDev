@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { useProfileMutation } from '../slices/userApiSlice'
-import { useUploadPostImageMutation } from '../slices/userApiSlice'
+import {
+  useProfileMutation,
+  useUploadPostImageMutation,
+} from '../slices/userApiSlice'
 import { setCredentials } from '../slices/authSlice'
 import { toast } from 'react-toastify'
 import Loading from '../components/Loading'
@@ -75,6 +77,7 @@ const Profile = () => {
   return (
     <div className='profile-container'>
       <h2>My Profile</h2>
+      {/* If the user logged in through Google, some fields might be disabled */}
       <form onSubmit={handleSubmit}>
         <div className='form-group'>
           <label htmlFor='name'>Name</label>
@@ -83,6 +86,7 @@ const Profile = () => {
             id='name'
             value={username}
             onChange={(e) => setUserName(e.target.value)}
+            disabled={userInfo?.googleId} // Disable if logged in with Google
             required
           />
         </div>
@@ -94,31 +98,37 @@ const Profile = () => {
             id='email'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={userInfo?.googleId} // Disable if logged in with Google
             required
           />
         </div>
 
-        <div className='form-group'>
-          <label htmlFor='password'>New Password</label>
-          <input
-            type='password'
-            id='password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder='Leave blank to keep current password'
-          />
-        </div>
+        {!userInfo?.googleId && ( // Only show password fields if not logged in with Google
+          <>
+            <div className='form-group'>
+              <label htmlFor='password'>New Password</label>
+              <input
+                type='password'
+                id='password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder='Leave blank to keep current password'
+              />
+            </div>
 
-        <div className='form-group'>
-          <label htmlFor='confirmPassword'>Confirm Password</label>
-          <input
-            type='password'
-            id='confirmPassword'
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder='Confirm new password'
-          />
-        </div>
+            <div className='form-group'>
+              <label htmlFor='confirmPassword'>Confirm Password</label>
+              <input
+                type='password'
+                id='confirmPassword'
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder='Confirm new password'
+              />
+            </div>
+          </>
+        )}
+
         <div className='my-2'>
           <label>Image</label>
           <input
@@ -158,7 +168,8 @@ const Profile = () => {
             </div>
           )}
         </div>
-        <button type='submit' disabled={updating}>
+
+        <button type='submit' disabled={updating || userInfo?.googleId}>
           {updating ? <Loading /> : 'Update Profile'}
         </button>
       </form>

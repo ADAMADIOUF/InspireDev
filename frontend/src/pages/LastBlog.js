@@ -1,5 +1,6 @@
 import React from 'react'
 import { useGetPostsQuery } from '../slices/blogApiSlice'
+import { Link } from 'react-router-dom'
 
 const LastBlog = () => {
   const { data: posts, error, isLoading, refetch } = useGetPostsQuery()
@@ -15,7 +16,7 @@ const LastBlog = () => {
   return (
     <div>
       <section className='latest-blogs'>
-        <h2>Latest Blogs</h2>
+        <h2>First Blogs</h2>
         <div className='blog-grid'>
           {posts && posts.length > 0 ? (
             posts.slice(0, 3).map((post) => (
@@ -28,9 +29,9 @@ const LastBlog = () => {
                 <h3>{post.title}</h3>
                 <p>{post.content.substring(0, 150)}...</p>{' '}
                 {/* Display a truncated version of content */}
-                <a href={`/blog/${post._id}`} className='btn'>
+                <Link to={`/blog/${post._id}`} className='btn'>
                   Read More
-                </a>
+                </Link>
               </div>
             ))
           ) : (
