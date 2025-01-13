@@ -16,14 +16,14 @@ export default function passportSetup() {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          // Handle the Google login logic
-          const { user, token } = await googleLoginHandler(profile)
+          const user = await googleLoginHandler(profile._json)
 
-          // Instead of `res.redirect`, return the token here and handle it manually
-          // Now send the token via response after handling login logic in `googleLoginHandler`
-          done(null, { user, token })
+          // Generate a JWT token for the user
+          const token = generateToken(user._id)
+
+          done(null, { user, token }) // Pass the user and token to the callback
         } catch (error) {
-          done(error, false) // If an error occurs, pass it to the callback
+          done(error, null) // Pass errors to the callback
         }
       }
     )

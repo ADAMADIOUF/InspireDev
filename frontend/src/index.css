@@ -328,6 +328,7 @@ text-transform: uppercase;
 
 .logo{
   color: var(--primary);
+    white-space: nowrap;
 }
 .logo-icon{
   color:var(--secondary);
@@ -363,6 +364,7 @@ text-transform: uppercase;
   font-weight: 500;
    padding: 10px 15px;
   transition: var(--transition);
+    white-space: nowrap;
 }
 .nav-item a:hover{
   color: var(--primary);
