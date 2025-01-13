@@ -9,7 +9,6 @@ import uploaduserRoute from './routes/uploaduserRoute.js';
 import blogRoutes from './routes/blogRoute.js';
 import commentRoutes from './routes/commentRoute.js';
 import contactRoute from './routes/contactRoute.js';
-import authRoutes from './routes/authRoutes.js';
 import passportSetup from './passportSetup.js';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
@@ -46,7 +45,7 @@ app.use(passport.session());
 passportSetup();
 
 // Routes
-app.use('/auth', authRoutes);
+
 app.use('/api/users', userRoute);
 app.use('/api/upload', uploaduserRoute);
 app.use('/api/blogs', blogRoutes);

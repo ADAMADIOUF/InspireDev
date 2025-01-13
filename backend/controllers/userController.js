@@ -310,3 +310,43 @@ export const resetPassword = asyncHandler(async (req, res) => {
     .status(200)
     .json({ message: 'Password reset successful, you can now log in' })
 })
+
+export const googleLoginHandler = asyncHandler(async (googleProfile) => {
+  try {
+    const { id, email, name, picture } = googleProfile
+
+    // Check if the user exists
+    let user = await User.findOne({ googleId: id })
+
+    if (!user) {
+      // If the user doesn't exist, create a new one
+      user = await User.create({
+        googleId: id,
+        email,
+        username: name,
+        avatar: picture,
+        isVerified: true,
+        role: email === 'admin@example.com' ? 'admin' : 'user',
+      })
+    }
+
+    return user // Return the user object
+  } catch (error) {
+    console.error('Error during Google login:', error)
+    throw new Error('Error during Google login')
+  }
+})
+export const googleCallbackHandler = (req, res) => {
+  try {
+    const { user } = req.user // Extract the user object
+
+    // Generate a JWT token for the authenticated user
+    const token = generateToken(user._id)
+
+    // Redirect to frontend with the token
+    res.redirect(`http://localhost:3000?token=${token}`)
+  } catch (error) {
+    console.error('Error in Google callback handler:', error)
+    res.status(500).send('Internal Server Error')
+  }
+}

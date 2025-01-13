@@ -1,5 +1,6 @@
 import { UPLOAD_URL, USERS_URL} from '../constants'
 import { apiSlice } from './apiSlice'
+import { setCredentials } from './authSlice'
 export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -9,8 +10,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-    
-    
+
     register: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/register`,
@@ -79,12 +79,30 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+
+    // In usersApiSlice.js
+    googleLogin: builder.mutation({
+      query: (token) => ({
+        url: `${USERS_URL}/auth/google/callback`, // Your Google login route on the backend
+        method: 'POST',
+        body: { token }, // Pass the Google token here
+      }),
+      // Handle successful login and update userInfo in Redux store and localStorage
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled // Assume the response contains user data
+          dispatch(setCredentials(data)) // Store the user data in Redux and localStorage
+        } catch (error) {
+          console.error('Google login failed', error)
+        }
+      },
+    }),
   }),
 })
 
 export const {
   useLoginMutation,
- 
+
   useLogoutMutation,
   useRegisterMutation,
   useForgotPasswordMutation,
@@ -95,4 +113,5 @@ export const {
   useGetUserDetailsQuery,
   useUpdateUserMutation,
   useUploadPostImageMutation,
+  useGoogleLoginMutation,
 } = usersApiSlice

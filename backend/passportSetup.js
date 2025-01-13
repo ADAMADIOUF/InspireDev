@@ -1,7 +1,9 @@
 import passport from 'passport'
-import { Strategy as GoogleStrategy } from 'passport-google-oauth2'
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
+import jwt from 'jsonwebtoken'
 import User from './models/User.js' // Ensure your User model is imported
 import dotenv from 'dotenv'
+import { googleLoginHandler } from './controllers/userController.js'
 
 // Load environment variables
 dotenv.config()
@@ -12,29 +14,18 @@ export default function passportSetup() {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: `${process.env.BACKEND_URL}/auth/google/callback`,
+        callbackURL: 'http://localhost:5000/auth/google/callback',
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          console.log('Google profile:', profile) // Debug the profile object
+          // Handle the Google login logic
+          const { user, token } = await googleLoginHandler(profile)
 
-          let user = await User.findOne({ googleId: profile.id })
-
-          if (!user) {
-            // If the user doesn't exist, create a new user
-            user = new User({
-              googleId: profile.id,
-              username: profile.displayName,
-              email: profile.emails[0].value,
-              image: profile.photos[0]?.value || 'default-image-url.jpg', // Fallback image
-            })
-            await user.save()
-          }
-
-          done(null, user) // Pass the user to the next step
+          // Instead of `res.redirect`, return the token here and handle it manually
+          // Now send the token via response after handling login logic in `googleLoginHandler`
+          done(null, { user, token })
         } catch (error) {
-          console.error('Error during authentication:', error)
-          done(error, false)
+          done(error, false) // If an error occurs, pass it to the callback
         }
       }
     )

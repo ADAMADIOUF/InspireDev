@@ -63,13 +63,14 @@ const router = createBrowserRouter(
     </Route>
   )
 )
-
+const googleClientId =
+  '861009682534-unfu2drvebbhjiufbd0tieot8ufs41s5.apps.googleusercontent.com'
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <Provider store={store}>
-    
+    <GoogleOAuthProvider clientId={googleClientId}>
       <RouterProvider router={router} />
-    
+    </GoogleOAuthProvider>
   </Provider>
 )
 
