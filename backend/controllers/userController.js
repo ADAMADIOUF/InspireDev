@@ -336,6 +336,7 @@ export const googleLoginHandler = asyncHandler(async (googleProfile) => {
     throw new Error('Error during Google login')
   }
 })
+
 export const googleCallbackHandler = (req, res) => {
   try {
     const { user } = req.user // Extract the user object

@@ -63,13 +63,14 @@ router.get(
   '/google/callback',
   passport.authenticate('google', { session: false }),
   (req, res) => {
-    // Assuming your callback handler does something like this
+    console.log('Google Callback User:', req.user) // Add logging here
     const { user, token } = req.user
     res.redirect(
       `http://your-frontend-url?token=${token}&user=${JSON.stringify(user)}`
     )
   }
 )
+
 
 router.post('/logout', logoutUser)
 

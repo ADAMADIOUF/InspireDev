@@ -1,7 +1,5 @@
 import passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
-import jwt from 'jsonwebtoken'
-import User from './models/User.js' // Ensure your User model is imported
 import dotenv from 'dotenv'
 import { googleLoginHandler } from './controllers/userController.js'
 
